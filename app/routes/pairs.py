@@ -11,7 +11,7 @@ app = APIRouter(prefix='/pairs', tags=['pairs'])
 def read_pairs(session: SessionDep) -> list[PairResponse]:
     """
     Получить список всех существующих пар.
-    
+
     Args:
         session (SessionDep): Сессия базы данных
 
@@ -76,11 +76,11 @@ def delete_pair(pair_id: int, session: SessionDep):
     pair = session.get(Pair, pair_id)
     if not pair:
         raise HTTPException(status_code=404, detail="Pair not found")
-    
+
     # Получаем связанных танцоров
     dancer1 = session.get(Dancer, pair.dancer1_id)
     dancer2 = session.get(Dancer, pair.dancer2_id)
-    
+
     # Удаляем пару
     session.delete(pair)
 
@@ -91,22 +91,22 @@ def delete_pair(pair_id: int, session: SessionDep):
             (Pair.dancer2_id == dancer1.id)
         )
     ).all()
-    
+
     dancer2_pairs = session.exec(
         select(Pair).where(
             (Pair.dancer1_id == dancer2.id) |
             (Pair.dancer2_id == dancer2.id)
         )
     ).all()
-    
+
     # Обновляем статусы если нужно
     if not dancer1_pairs and dancer1.status == StatusType.IN_PAIR:
         dancer1.status = StatusType.IN_SEARCH
         session.add(dancer1)
-    
+
     if not dancer2_pairs and dancer2.status == StatusType.IN_PAIR:
         dancer2.status = StatusType.IN_SEARCH
         session.add(dancer2)
-    
+
     session.commit()
     return {"ok": True}

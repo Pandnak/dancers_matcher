@@ -10,7 +10,7 @@ app = APIRouter(prefix="/dancers", tags=['dancers'])
 def create_dancer(dancer: Dancer, session: SessionDep) -> Dancer:
     """
     Создать нового танцора в базе данных.
-    
+
     Args:
         dancer (Dancer): Объект танцора с данными для создания
         session (SessionDep): Сессия базы данных
@@ -30,7 +30,7 @@ def read_dancers(
 ) -> list[Dancer]:
     """
     Получить список всех зарегистрированных танцоров.
-    
+
     Args:
         session (SessionDep): Сессия базы данных
 
@@ -45,7 +45,7 @@ def read_dancers(
 def read_dancer(dancer_id: int, session: SessionDep) -> Dancer:
     """
     Получить информацию о танцоре по его ID.
-    
+
     Args:
         dancer_id (int): Уникальный идентификатор танцора
         session (SessionDep): Сессия базы данных
@@ -81,7 +81,7 @@ def update_dancer(dancer_upd: Dancer, session: SessionDep) -> Dancer:
 
     if not dancer:
         raise HTTPException(status_code=404, detail="Dancer not found")
-    
+
     dancer.name = dancer_upd.name
     dancer.age = dancer_upd.age
     dancer.height = dancer_upd.height
@@ -90,12 +90,12 @@ def update_dancer(dancer_upd: Dancer, session: SessionDep) -> Dancer:
     dancer.level = dancer_upd.level
     dancer.status = dancer_upd.status
     dancer.style = dancer_upd.style
-    
+
     session.commit()
     session.refresh(dancer)
 
     return dancer
- 
+
 @app.delete("/{dancer_id}")
 def delete_dancer(dancer_id: int, session: SessionDep):
     """

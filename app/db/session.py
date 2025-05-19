@@ -1,7 +1,7 @@
-from db.db import engine
 from sqlmodel import Session
 from typing import Annotated
 from fastapi import Depends
+from db.db import engine
 
 def get_session():
     with Session(engine) as session:

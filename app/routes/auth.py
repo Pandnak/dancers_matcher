@@ -5,14 +5,12 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from models import User
 from auth_handler import (get_password_hash,
                           verify_password,
-                          create_access_token)
+                          create_access_token,
+                          get_current_user,
+                          ACCESS_TOKEN_EXPIRE_MINUTES)
 from db.session import SessionDep
-from auth_handler import ACCESS_TOKEN_EXPIRE_MINUTES
 from sqlmodel import select
 from datetime import timedelta
-from db.session import SessionDep
-from db.db import engine
-from auth_handler import get_current_user
 
 
 app = APIRouter(prefix='/auth',tags=['auth'])
@@ -24,7 +22,7 @@ def create_user(user: User,
                 session: SessionDep):
     """
     Зарегистрировать нового пользователя системы.
-    
+
     Args:
         user (User): Данные нового пользователя
         session (Session): Сессия базы данных
@@ -55,7 +53,6 @@ def create_user(user: User,
             detail=f"User with email {user.email} already exists"
         )
 
-
 @app.post("/login", status_code=status.HTTP_200_OK,
              summary = 'Войти в систему')
 def user_login(session: SessionDep, login_attempt_data: OAuth2PasswordRequestForm = Depends()):
@@ -63,7 +60,7 @@ def user_login(session: SessionDep, login_attempt_data: OAuth2PasswordRequestFor
                  .where(User.email == login_attempt_data.username))
     """
     Аутентификация пользователя и получение JWT токена.
-    
+
     Args:
         login_attempt_data (OAuth2PasswordRequestForm): Данные для входа
         db_session (Session): Сессия базы данных
@@ -95,19 +92,19 @@ def user_login(session: SessionDep, login_attempt_data: OAuth2PasswordRequestFor
             "access_token": access_token,
             "token_type": "bearer"
         }
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Wrong password for user {login_attempt_data.username}"
-        )
-    
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"Wrong password for user {login_attempt_data.username}"
+    )
+
 @app.delete("/{user_id}")
-def delete_user(user_id: int, 
+def delete_user(user_id: int,
                 session: SessionDep,
                 current_user = Depends(get_current_user)):
     """
     Удалить пользователя из системы по его ID.
-    
+
     Args:
         user_id (int): Уникальный идентификатор пользователя
         session (SessionDep): Сессия базы данных
@@ -124,7 +121,6 @@ def delete_user(user_id: int,
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can't delete other users",
         )
-
 
     user = session.get(User, user_id)
     if not user:

@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlmodel import Field, SQLModel
-from schemas import (Sex, StatusType, RequestStatus, UserType)
-from pydantic_settings import SettingsConfigDict
 from pydantic import EmailStr, BaseModel
+from pydantic_settings import SettingsConfigDict
+from schemas import (Sex, StatusType, RequestStatus, UserType)
 
 class Dancer(SQLModel, table=True):
     __tablename__ = "dancer"
@@ -75,4 +75,4 @@ class UserCrendentials(BaseModel):
                 "user_type": "ADMIN",
                 "dancer_id": "None"
             }
-        }) 
+        })
