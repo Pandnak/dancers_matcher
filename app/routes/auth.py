@@ -11,6 +11,9 @@ from auth_handler import ACCESS_TOKEN_EXPIRE_MINUTES
 from sqlmodel import select
 from datetime import timedelta
 from db.session import SessionDep
+from db.db import engine
+from auth_handler import get_current_user
+
 
 app = APIRouter(prefix='/auth',tags=['auth'])
 
@@ -36,6 +39,8 @@ def create_user(user: User,
     new_user = User(
         name=user.name,
         email=user.email,
+        user_type=user.user_type,
+        dancer_id=user.dancer_id,
         password=get_password_hash(user.password)
     )
     try:
@@ -95,3 +100,35 @@ def user_login(session: SessionDep, login_attempt_data: OAuth2PasswordRequestFor
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Wrong password for user {login_attempt_data.username}"
         )
+    
+@app.delete("/{user_id}")
+def delete_user(user_id: int, 
+                session: SessionDep,
+                current_user = Depends(get_current_user)):
+    """
+    Удалить пользователя из системы по его ID.
+    
+    Args:
+        user_id (int): Уникальный идентификатор пользователя
+        session (SessionDep): Сессия базы данных
+
+    Raises:
+        HTTPException: 404 если пользователь не найден
+
+    Returns:
+        dict: Результат операции
+    """
+    if current_user.user_type == "DANCER" and \
+            user_id != current_user.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can't delete other users",
+        )
+
+
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    session.delete(user)
+    session.commit()
+    return {"ok": True}

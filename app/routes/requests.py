@@ -1,13 +1,17 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Depends
 from models import Dancer, Request, Pair
 from schemas import RequestCreate, RequestUpdate, RequestStatus, StatusType
 from db.session import SessionDep
 from sqlmodel import select
+from auth_handler import get_current_user
+
 
 app = APIRouter(prefix="/requests", tags=['requests'])
  
 @app.post("/", status_code=status.HTTP_201_CREATED)
-def create_request(request: RequestCreate, session: SessionDep) -> Request:
+def create_request(request: RequestCreate, 
+                   session: SessionDep,
+                   current_user: dict = Depends(get_current_user)) -> Request:
     """
     Создать новый запрос на партнерство между танцорами.
     
@@ -26,6 +30,15 @@ def create_request(request: RequestCreate, session: SessionDep) -> Request:
     if not sender:
         raise HTTPException(status_code=404, detail="Sender dancer not found")
     
+    if not(current_user.dancer_id is None) and current_user.dancer_id != sender.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No enough right to create request. " \
+            "User should have an existing dancer_id." \
+            "Dancer with dancer_id should exist.",
+        )
+
+
     # Check if receiver exists
     receiver = session.get(Dancer, request.receiver_id)
     if not receiver:
@@ -80,7 +93,8 @@ def read_request(request_id: int, session: SessionDep) -> Request:
 def update_request(
     request_id: int, 
     request_update: RequestUpdate, 
-    session: SessionDep
+    session: SessionDep,
+    current_user: dict = Depends(get_current_user),
 ) -> Request:
     """
     Обновить статус запроса на партнерство.

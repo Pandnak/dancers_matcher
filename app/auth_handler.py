@@ -7,10 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlmodel import Session, select
 from db.session import get_session
-from sqlalchemy import UniqueConstraint
-from sqlmodel import SQLModel, Field as SQLField
-from pydantic_settings import SettingsConfigDict
-from pydantic import (BaseModel, Field, BeforeValidator, EmailStr)
+from models import User
 
 SECRET_KEY = "your-secret-key-here"
 ALGORITHM = "HS256"

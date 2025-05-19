@@ -1,7 +1,6 @@
 from datetime import datetime
 from sqlmodel import Field, SQLModel
 from schemas import (Sex, StatusType, RequestStatus, UserType)
-from sqlalchemy import UniqueConstraint
 from pydantic_settings import SettingsConfigDict
 from pydantic import EmailStr, BaseModel
 
@@ -17,6 +16,8 @@ class Dancer(SQLModel, table=True):
     style: str | None = None
     level: str | None = None
     status: StatusType = "IN_SEARCH"
+    # user_id: int = Field(default=None, foreign_key="user.id")
+
 
 class Request(SQLModel, table=True):
     __tablename__ = "request"
@@ -43,32 +44,35 @@ class PairResponse(SQLModel):
     created_at: datetime
 
 class User(SQLModel, table=True):
-    __table_args__ = (UniqueConstraint("email"),)
-
     user_id: int = Field(default=None, nullable=False, primary_key=True)
     email: str = Field(nullable=True, unique_items=True)
     password: str | None
     name: str
     user_type: UserType = 'DANCER'
-    dancer_id: int = Field(default=None, foreign_key="dancer.id")
+    dancer_id: int | None = Field(default=None, index=True, foreign_key='dancer.id')
 
     model_config = SettingsConfigDict(
         json_schema_extra = {
             "example": {
                 "name": "Иван Иванов",
-                "email": "user@example.com",
-                "password": "qwerty"
+                "email": "admin@admin.com",
+                "password": "admin",
+                "user_type": "ADMIN",
+                "dancer_id": "None"
             }
         })
 
 class UserCrendentials(BaseModel):
     email: EmailStr
     password: str
+    user_type: UserType
 
     model_config = SettingsConfigDict(
         json_schema_extra = {
             "example": {
-                "email": "user@example.com",
-                "password": "querty"
+                "email": "admin@admin.com",
+                "password": "admin",
+                "user_type": "ADMIN",
+                "dancer_id": "None"
             }
-        })
+        }) 
