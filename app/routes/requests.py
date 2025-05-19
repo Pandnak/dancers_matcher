@@ -5,8 +5,8 @@ from db.session import SessionDep
 from sqlmodel import select
 
 app = APIRouter(prefix="/requests", tags=['requests'])
-
-@app.post("/requests/", status_code=status.HTTP_201_CREATED)
+ 
+@app.post("/", status_code=status.HTTP_201_CREATED)
 def create_request(request: RequestCreate, session: SessionDep) -> Request:
     """
     Создать новый запрос на партнерство между танцорами.
@@ -39,7 +39,7 @@ def create_request(request: RequestCreate, session: SessionDep) -> Request:
     return db_request
 
 
-@app.get("/requests/")
+@app.get("/")
 def read_requests(
     session: SessionDep,
 ) -> list[Request]:
@@ -56,7 +56,7 @@ def read_requests(
     requests = session.exec(select(Request)).all()
     return requests
 
-@app.get("/requests/{request_id}")
+@app.get("/{request_id}")
 def read_request(request_id: int, session: SessionDep) -> Request:
     request = session.get(Request, request_id)
     """
@@ -76,7 +76,7 @@ def read_request(request_id: int, session: SessionDep) -> Request:
         raise HTTPException(status_code=404, detail="Request not found")
     return request
 
-@app.put("/requests/{request_id}")
+@app.put("/{request_id}")
 def update_request(
     request_id: int, 
     request_update: RequestUpdate, 
@@ -162,7 +162,7 @@ def update_request(
     session.refresh(db_request)
     return db_request
 
-@app.delete("/requests/{request_id}")
+@app.delete("/{request_id}")
 def delete_request(request_id: int, session: SessionDep):
     """
     Удалить запрос на партнерство.
@@ -177,7 +177,7 @@ def delete_request(request_id: int, session: SessionDep):
     Returns:
         dict: Результат операции
     """
-    
+
     request = session.get(Request, request_id)
     if not request:
         raise HTTPException(status_code=404, detail="Request not found")

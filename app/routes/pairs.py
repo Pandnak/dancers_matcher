@@ -7,7 +7,7 @@ from sqlmodel import select
 app = APIRouter(prefix='/pairs', tags=['pairs'])
 
 
-@app.get("/pairs/")
+@app.get("/")
 def read_pairs(session: SessionDep) -> list[PairResponse]:
     """
     Получить список всех существующих пар.
@@ -27,7 +27,7 @@ def read_pairs(session: SessionDep) -> list[PairResponse]:
         created_at=pair.created_at
     ) for pair in pairs]
 
-@app.get("/pairs/{pair_id}")
+@app.get("/{pair_id}")
 def read_pair(pair_id: int, session: SessionDep) -> PairResponse:
     """
     Получить информацию о паре по её ID.
@@ -53,7 +53,7 @@ def read_pair(pair_id: int, session: SessionDep) -> PairResponse:
         created_at=pair.created_at
     )
 
-@app.delete("/pairs/{pair_id}")
+@app.delete("/{pair_id}")
 def delete_pair(pair_id: int, session: SessionDep):
     """
     Удалить пару и обновить статусы танцоров.
@@ -72,7 +72,7 @@ def delete_pair(pair_id: int, session: SessionDep):
     Returns:
         dict: Результат операции
     """
-    
+
     pair = session.get(Pair, pair_id)
     if not pair:
         raise HTTPException(status_code=404, detail="Pair not found")
