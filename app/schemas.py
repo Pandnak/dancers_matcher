@@ -15,7 +15,6 @@ class RequestStatus(str, Enum):
     PENDING = "PENDING" 
     REJECTED = "REJECTED" 
 
-
 class UserType(str, Enum):
     ADMIN = "ADMIN" 
     DANCER = "DANCER" 

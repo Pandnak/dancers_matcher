@@ -176,7 +176,9 @@ def update_request(
     return db_request
 
 @app.delete("/{request_id}")
-def delete_request(request_id: int, session: SessionDep):
+def delete_request(request_id: int, 
+                   session: SessionDep, 
+                   current_user: dict = Depends(get_current_user)):
     """
     Удалить запрос на партнерство.
 
@@ -190,10 +192,18 @@ def delete_request(request_id: int, session: SessionDep):
     Returns:
         dict: Результат операции
     """
-
-    request = session.get(Request, request_id)
-    if not request:
-        raise HTTPException(status_code=404, detail="Request not found")
-    session.delete(request)
-    session.commit()
-    return {"ok": True}
+    if current_user.user_type == "DANCER":
+        if not(current_user.dancer_id is None) and current_user.dancer_id != request_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="No enough right to delete request. " \
+                "User should have an existing dancer_id." \
+                "Dancer with dancer_id should exist and be the same delete user_id.",
+            )
+    else:
+        request = session.get(Request, request_id)
+        if not request:
+            raise HTTPException(status_code=404, detail="Request not found")
+        session.delete(request)
+        session.commit()
+        return {"ok": True}

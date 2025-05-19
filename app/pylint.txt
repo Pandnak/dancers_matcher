@@ -1,0 +1,76 @@
+************* Module models
+models.py:15:20: C0303: Trailing whitespace (trailing-whitespace)
+models.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+models.py:7:0: C0115: Missing class docstring (missing-class-docstring)
+models.py:22:0: C0115: Missing class docstring (missing-class-docstring)
+models.py:32:0: C0115: Missing class docstring (missing-class-docstring)
+models.py:40:0: C0115: Missing class docstring (missing-class-docstring)
+models.py:46:0: C0115: Missing class docstring (missing-class-docstring)
+models.py:65:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module auth_handler
+auth_handler.py:65:67: C0303: Trailing whitespace (trailing-whitespace)
+auth_handler.py:85:0: C0303: Trailing whitespace (trailing-whitespace)
+auth_handler.py:100:0: C0304: Final newline missing (missing-final-newline)
+auth_handler.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+auth_handler.py:92:8: W0707: Consider explicitly re-raising using 'except InvalidTokenError as exc' and 'raise credentials_exception from exc' (raise-missing-from)
+************* Module schemas
+schemas.py:14:25: C0303: Trailing whitespace (trailing-whitespace)
+schemas.py:15:23: C0303: Trailing whitespace (trailing-whitespace)
+schemas.py:16:25: C0303: Trailing whitespace (trailing-whitespace)
+schemas.py:20:19: C0303: Trailing whitespace (trailing-whitespace)
+schemas.py:21:21: C0303: Trailing whitespace (trailing-whitespace)
+schemas.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+schemas.py:5:0: C0115: Missing class docstring (missing-class-docstring)
+schemas.py:9:0: C0115: Missing class docstring (missing-class-docstring)
+schemas.py:13:0: C0115: Missing class docstring (missing-class-docstring)
+schemas.py:19:0: C0115: Missing class docstring (missing-class-docstring)
+schemas.py:23:0: C0115: Missing class docstring (missing-class-docstring)
+schemas.py:27:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module main
+main.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+main.py:25:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module db.session
+db/session.py:10:0: C0304: Final newline missing (missing-final-newline)
+db/session.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+db/session.py:6:0: C0116: Missing function or method docstring (missing-function-docstring)
+db/session.py:2:0: C0411: standard import "typing.Annotated" should be placed before third party import "sqlmodel.Session" (wrong-import-order)
+************* Module db.db
+db/db.py:10:0: C0304: Final newline missing (missing-final-newline)
+db/db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+db/db.py:3:0: C0103: Constant name "sqlite_file_name" doesn't conform to UPPER_CASE naming style (invalid-name)
+db/db.py:4:0: C0103: Constant name "sqlite_url" doesn't conform to UPPER_CASE naming style (invalid-name)
+db/db.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module routes.recomendations
+routes/recomendations.py:150:0: C0301: Line too long (101/100) (line-too-long)
+routes/recomendations.py:151:0: C0301: Line too long (111/100) (line-too-long)
+routes/recomendations.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/recomendations.py:23:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/recomendations.py:80:0: R0914: Too many local variables (16/15) (too-many-locals)
+routes/recomendations.py:6:0: C0411: third party import "sqlmodel.select" should be placed before first party imports "models.Dancer", "db.session.SessionDep"  (wrong-import-order)
+************* Module routes.pairs
+routes/pairs.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/pairs.py:5:0: C0411: third party import "sqlmodel.select" should be placed before first party imports "models.Pair", "schemas.StatusType", "db.session.SessionDep"  (wrong-import-order)
+************* Module routes.dancers
+routes/dancers.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/dancers.py:3:0: C0411: third party import "sqlmodel.select" should be placed before first party import "db.session.SessionDep"  (wrong-import-order)
+************* Module routes.requests
+routes/requests.py:140:0: C0301: Line too long (104/100) (line-too-long)
+routes/requests.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/requests.py:72:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/requests.py:74:4: W0105: String statement has no effect (pointless-string-statement)
+routes/requests.py:152:17: E1101: Instance of 'FieldInfo' has no 'in_' member (no-member)
+routes/requests.py:153:17: E1101: Instance of 'FieldInfo' has no 'in_' member (no-member)
+routes/requests.py:96:4: W0613: Unused argument 'current_user' (unused-argument)
+routes/requests.py:5:0: C0411: third party import "sqlmodel.select" should be placed before first party imports "models.Dancer", "schemas.RequestCreate", "db.session.SessionDep"  (wrong-import-order)
+************* Module routes.auth
+routes/auth.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/auth.py:2:0: E0611: No name 'UniqueViolation' in module 'psycopg2.errors' (no-name-in-module)
+routes/auth.py:51:8: W0707: Consider explicitly re-raising using 'raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f'User with email {user.email} already exists') from e' (raise-missing-from)
+routes/auth.py:58:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/auth.py:61:4: W0105: String statement has no effect (pointless-string-statement)
+routes/auth.py:12:0: C0411: third party import "sqlmodel.select" should be placed before first party imports "models.User", "auth_handler.get_password_hash", "db.session.SessionDep"  (wrong-import-order)
+routes/auth.py:13:0: C0411: standard import "datetime.timedelta" should be placed before third party imports "sqlalchemy.exc.IntegrityError", "psycopg2.errors.UniqueViolation", "fastapi.APIRouter", "fastapi.security.oauth2.OAuth2PasswordRequestForm", "sqlmodel.select" and first party imports "models.User", "auth_handler.get_password_hash", "db.session.SessionDep"  (wrong-import-order)
+
+------------------------------------------------------------------
+Your code has been rated at 7.97/10 (previous run: 7.69/10, +0.28)
+

@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from db.session import SessionDep
 from sqlmodel import select
 from models import Dancer
+from auth_handler import get_current_user
+
 
 
 app = APIRouter(prefix="/dancers", tags=['dancers'])
@@ -62,7 +64,10 @@ def read_dancer(dancer_id: int, session: SessionDep) -> Dancer:
     return dancer
 
 @app.put("/{dancer_id}")
-def update_dancer(dancer_upd: Dancer, session: SessionDep) -> Dancer:
+def update_dancer(dancer_upd: Dancer, 
+                  session: SessionDep,
+                  current_user:dict = Depends(get_current_user)
+                  ) -> Dancer:
     """
     Полностью обновить информацию о танцоре.
     
@@ -76,6 +81,13 @@ def update_dancer(dancer_upd: Dancer, session: SessionDep) -> Dancer:
     Returns:
         Dancer: Обновленный объект танцора
     """
+    if not(current_user.dancer_id is None) and current_user.dancer_id != dancer_upd.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No enough right to update dancer. " \
+            "User should have an existing dancer_id." \
+            "Dancer with dancer_id should exist and be the same delete user_id.",
+        )
 
     dancer = session.query(Dancer).filter(Dancer.id == dancer_upd.id).first()
 
@@ -97,7 +109,9 @@ def update_dancer(dancer_upd: Dancer, session: SessionDep) -> Dancer:
     return dancer
 
 @app.delete("/{dancer_id}")
-def delete_dancer(dancer_id: int, session: SessionDep):
+def delete_dancer(dancer_id: int, 
+                  session: SessionDep,
+                  current_user:dict = Depends(get_current_user)):
     """
     Удалить танцора из системы по его ID.
     
@@ -111,6 +125,13 @@ def delete_dancer(dancer_id: int, session: SessionDep):
     Returns:
         dict: Результат операции
     """
+    if not(current_user.dancer_id is None) and current_user.dancer_id != dancer_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No enough right to delete dancer. " \
+            "User should have an existing dancer_id." \
+            "Dancer with dancer_id should exist and be the same delete user_id.",
+        )
     dancer = session.get(Dancer, dancer_id)
     if not dancer:
         raise HTTPException(status_code=404, detail="Dancer not found")
